@@ -3,3 +3,9 @@
 .cache-*
 spotify_data.json
 __pycache__
+
+.playwright-cli/
+.venv/
+__pycache__/
+private-export*.json
+passage-synthetic-report.json
