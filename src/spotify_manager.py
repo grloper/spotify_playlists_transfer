@@ -178,10 +178,8 @@ class SpotifyManager:
                     logger.error(f"Spotify API error calling {api_func.__name__}: {e.http_status} - {e.msg}", exc_info=True)
                     return None # Indicate failure
             except requests.exceptions.Timeout:
-                logger.warning(f"Request timed out calling {api_func.__name__}. Retrying... ({retries + 1}/{MAX_RETRIES})")
-                time.sleep(delay)
-                retries += 1
-                delay *= 2 # Exponential backoff for timeouts
+                logger.error("Request timed out. Outcome may be unknown; reconcile before retrying.")
+                return None
             except requests.exceptions.RequestException as e:
                 logger.error(f"Network error calling {api_func.__name__}: {e}", exc_info=True)
                 return None # Indicate failure
@@ -213,6 +211,8 @@ class SpotifyManager:
         logger.debug(f"Fetching paginated data using {fetch_func.__name__} with args: {args} and kwargs: {kwargs}")
         results = self._spotify_api_call(fetch_func, *args, **kwargs)
         
+        if results is None:
+            raise RuntimeError('Export failed: initial page could not be read.')
         page_count = 0
         while results:
             page_count += 1
@@ -220,6 +220,8 @@ class SpotifyManager:
             logger.debug(f"Fetched page {page_count}, total items so far: {len(items)}")
             if results['next']:
                 results = self._spotify_api_call(self.sp.next, results)
+                if results is None:
+                    raise RuntimeError('Export incomplete: a subsequent page failed.')
             else:
                 results = None  # End of pagination
         
@@ -313,7 +315,7 @@ class SpotifyManager:
                 result = self._spotify_api_call(self.sp.playlist_add_items, new_playlist_id, batch)
                 if result is None:
                      logger.error(f"Failed to add batch {i // MAX_TRACKS_PER_ADD + 1} to playlist '{name}'.")
-                     # Optionally: Decide whether to continue or stop
+                     raise RuntimeError('Transfer stopped: reconcile this playlist before retrying.')
 
             logger.info(f"Finished adding tracks to playlist '{name}'.")
 
