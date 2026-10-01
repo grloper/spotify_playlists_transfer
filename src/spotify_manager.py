@@ -113,6 +113,11 @@ class SpotifyManager:
                 
                 # Retry with clean cache
                 return self.authenticate(clean_cache=True)
+            if self.user_id != self.username:
+                logger.error("Authenticated account does not match the requested account; refusing access.")
+                self.sp = None
+                self.user_id = None
+                return False
                 
             # Update the last authenticated username for future checks
             _last_authenticated_username = self.username

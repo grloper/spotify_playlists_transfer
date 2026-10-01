@@ -50,10 +50,9 @@ def validate_config() -> bool:
     }
     
     # We need a username to be set
+    missing_vars = [name for name, value in required_vars.items() if not value]
     if not SPOTIFY_USERNAME:
-        missing_vars = ["SPOTIFY_USERNAME"]
-    else:
-        missing_vars = [name for name, value in required_vars.items() if not value]
+        missing_vars.append("SPOTIFY_USERNAME")
     
     if missing_vars:
         logger.error(f"Missing required configuration: {', '.join(missing_vars)}")

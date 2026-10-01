@@ -5,6 +5,7 @@ import os
 import sys
 import logging
 import io
+import queue
 from typing import Optional, Callable
 
 # Import modules from the 'src' package
@@ -39,8 +40,28 @@ class LogHandler(logging.Handler):
     def __init__(self, text_widget):
         super().__init__()
         self.text_widget = text_widget
+        self.root = text_widget.winfo_toplevel()
+        self.records = queue.Queue()
+        self.root.after(50, self._drain)
+        self.root.bind('<Destroy>', self._on_destroy, add='+')
         
     def emit(self, record):
+        # Workers enqueue plain data; only the Tk thread touches widgets.
+        self.records.put(record)
+
+    def _on_destroy(self, event):
+        if event.widget == self.root:
+            logging.getLogger().removeHandler(self)
+
+    def _drain(self):
+        try:
+            while not self.records.empty():
+                self._render(self.records.get_nowait())
+            self.root.after(50, self._drain)
+        except (tk.TclError, queue.Empty):
+            logging.getLogger().removeHandler(self)
+
+    def _render(self, record):
         msg = self.format(record)
         self.text_widget.config(state=tk.NORMAL)
         
