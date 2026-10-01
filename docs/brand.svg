@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="Playlist Passage: Move a library with the account in view.">
+<rect width="1200" height="320" rx="24" fill="#101824"/><rect x="42" y="48" width="5" height="225" rx="2" fill="#74d89b"/>
+<text x="76" y="85" fill="#74d89b" font-family="Arial,sans-serif" font-size="16" letter-spacing="3">SPOTIFY LIBRARY TRANSFER</text>
+<text x="72" y="160" fill="#f4f5f7" font-family="Arial,sans-serif" font-size="62" font-weight="700">Playlist Passage</text>
+<text x="76" y="218" fill="#b9c4d1" font-family="Arial,sans-serif" font-size="24">Move a library with the account in view.</text>
+<text x="76" y="274" fill="#7c8a9d" font-family="Arial,sans-serif" font-size="14">IMPLEMENTATION FIRST · CLEAR LIMITS · REVIEWABLE CODE</text>
+<circle cx="980" cy="155" r="80" fill="none" stroke="#74d89b" stroke-width="8"/><path d="M945 110L1010 155L945 200Z" fill="#74d89b"/><circle cx="980" cy="155" r="104" fill="none" stroke="#334155"/></svg>

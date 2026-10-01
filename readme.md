@@ -1,84 +1,34 @@
-# Spotify Playlist & Liked Songs Migration Tool
+![Playlist Passage](docs/brand.svg)
 
-This tool helps you export your Spotify playlists and liked songs to a JSON file, then import them to another Spotify account.
+A Tkinter transfer utility with Spotify OAuth, paginated playlist/library reads and import/remove operations. Account identity is checked before access.
 
-![Spotify Data Migration Tool Screenshot](assets/image.png)
+## What was verified
 
-## Quick Start
+Three tests passed: account/configuration safety using mocked clients and real hidden Tk UI construction with background logging. No real account authenticated or library changed.
 
-1. **Create a Spotify Developer App**
-   - Visit [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/)
-   - Create a new app, note your Client ID and Secret
-   - Add `http://127.0.0.1:8080` as a Redirect URI
+## Run locally
 
-2. **IMPORTANT: Register All Users You Plan to Work With**
-   - In your Spotify App dashboard, go to **Edit Settings → User Management**
-   - Add **BOTH** your source and destination accounts in the format:
-     ```
-     username:email@example.com
-     ```
-   - You must add any account you want to use with this tool
-   - Click **Save**
+```sh
+python -m venv .venv
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -q
+python -m src.main
+```
 
-3. **Install Dependencies**
-   ```
-   pip install -r requirements.txt
-   ```
+Use a fresh checkout and isolated data. Inspect configuration before running provider, seed or mutation commands.
 
-4. **Run the Application**
-   ```
-   python -m src.main
-   ```
+## Implementation map
 
-## Using the Tool
+- [Core implementation](src/spotify_manager.py)
+- [Supporting implementation](src/data_handler.py)
+- [Verification and limitations](docs/VERIFICATION.md)
 
-### Export Data (Source Account)
-1. In Setup tab, enter API credentials and source username
-2. Click "Start Export" to save your playlists, liked songs, and **playlist images**
+## Boundaries
 
-### Import Data (Destination Account)
-1. Change username to destination account in Setup tab
-2. Click "Start Import" to add playlists, liked songs, and **playlist images**
+Actual Spotify transfer is unverified and requires a developer application and explicit account consent. Review exports and destination identity before any mutation.
 
-## New Features
+Tests with synthetic inputs prove those cases only. They do not establish user adoption, educational effectiveness, financial returns or production readiness.
 
-### Playlist Image Export & Import
-The tool now exports AND imports playlist images! This includes:
-- ✅ Custom uploaded playlist covers
-- ✅ Auto-generated mosaic covers  
-- ✅ Multiple image resolutions
-- ✅ Image URLs preserved in export data
-- ✅ **NEW**: Automatic image import when importing playlists
+## Contributing
 
-Playlist images are automatically exported to your JSON file and then applied to imported playlists in the destination account.
-
-**Note**: Image import requires downloading from the original URLs and may fail if images are no longer accessible or exceed Spotify's 256KB size limit.
-
-### Automatic Cache Management
-The tool automatically cleans authentication cache when switching between usernames, so you don't need to manually select "Clean Cache" anymore.
-
-## Troubleshooting
-
-### "User Not Registered" Error
-This is the most common error and means you need to add the Spotify account to your Developer Dashboard:
-
-1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/)
-2. Open your app
-3. Go to **Edit Settings → User Management**
-4. Add the account with `username:email@example.com`
-5. Save and try again
-
-### Authentication Issues
-- Ensure the Redirect URI exactly matches `http://127.0.0.1:8080`
-- The tool now automatically clears cached tokens when username changes
-- If you still have issues, manually delete any `.cache*` files in the application directory
-
-## GUI Features
-
-- **Setup Tab**: Configure credentials and usernames
-- **Export Tab**: Save playlists and liked songs to a file
-- **Import Tab**: Add saved playlists to a different account
-- **Erase Tab**: Delete playlists and liked songs (use with caution)
-- **Logs Tab**: View operation details and errors
-
-
+Use a focused branch, reproduce the issue locally, add a regression for changed behavior, and describe exactly which paths were exercised. Keep credentials and personal data out of fixtures, screenshots and issue reports. License terms remain unchanged; inspect the repository's existing license files before reuse.
